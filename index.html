@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doses Pediátricas</title>
+<style>
+  :root{
+    --bg: #0b0f1a;
+    --panel: #0f1626;
+    --sidebar: #0c1220;
+    --card: #121a2b;
+    --border: #232f45;
+    --red-dark: #4a0d10;
+    --red: #b1181f;
+    --red-bright: #e8232c;
+    --text: #eef1f6;
+    --text-dim: #8d99b3;
+    --amber: #e8b84b;
+    --pill-bg: #3a2d0e;
+    --pill-text: #f4cf6e;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width: 280px;
+    flex-shrink:0;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    position: sticky;
+    top:0;
+  }
+  .sidebar-header{
+    padding: 20px 18px 12px;
+  }
+  .sidebar-header h1{
+    font-size: 1.15rem;
+    margin:0 0 12px;
+    letter-spacing:.2px;
+  }
+  .search-box{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#0c1422;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding: 8px 10px;
+  }
+  .search-box input{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--text);
+    font-size:.85rem;
+    width:100%;
+  }
+  .sidebar-list{
+    flex:1;
+    overflow-y:auto;
+    padding: 4px 10px 20px;
+  }
+  .cat-header{
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.9px;
+    color: var(--amber);
+    font-weight:800;
+    margin: 18px 4px 8px;
+    padding: 4px 0 6px 8px;
+    border-left: 3px solid var(--red-bright);
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-header:first-child{ margin-top: 2px; }
+  .drug-item{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    color: #b9c3d6;
+    font-size:.86rem;
+    padding: 7px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-bottom: 2px;
+  }
+  .drug-item:hover{ background: rgba(255,255,255,.04); color:#fff; }
+  .drug-item.active{
+    background: linear-gradient(135deg, var(--red-dark), var(--red));
+    color:#fff;
+    font-weight:600;
+  }
+
+  /* ---------- Main ---------- */
+  .main{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    padding: 26px 40px 60px;
+  }
+  .main-inner{
+    width:100%;
+    max-width: 900px;
+  }
+  .main-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom: 18px;
+  }
+  .main-header h2{
+    margin:0;
+    font-size: 1.6rem;
+  }
+  .main-header .cat-tag{
+    display:inline-block;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:800;
+    color: var(--amber);
+    background: rgba(232,184,75,.08);
+    border: 1px solid rgba(232,184,75,.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top:6px;
+  }
+  .btn-bula{
+    border: 1px solid var(--red-bright);
+    color: var(--red-bright);
+    background: transparent;
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size:.8rem;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .btn-bula:hover{ background: rgba(232,35,44,.1); }
+
+  .peso-bar{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    display:flex;
+    gap: 26px;
+    align-items:center;
+    margin-bottom: 24px;
+  }
+  .peso-field{ display:flex; align-items:center; gap:8px; }
+  .peso-field label{ font-size:.82rem; color: var(--text-dim); font-weight:600; }
+  .peso-field input{
+    width: 80px;
+    background:#0c1422;
+    border:1px solid var(--border);
+    border-radius:6px;
+    color:var(--text);
+    padding:6px 8px;
+    font-size:.9rem;
+    outline:none;
+  }
+  .peso-field input:focus{ border-color: var(--red-bright); }
+  .peso-field span{ font-size:.8rem; color: var(--text-dim); }
+  .unidade-toggle{
+    display:flex;
+    background:#0c1422;
+    border:1px solid var(--border);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .unidade-toggle button{
+    background:none;
+    border:none;
+    color: var(--text-dim);
+    font-size:.75rem;
+    font-weight:600;
+    padding: 6px 10px;
+    cursor:pointer;
+  }
+  .unidade-toggle button.active{
+    background: linear-gradient(135deg, var(--red-dark), var(--red));
+    color:#fff;
+  }
+
+  .empty-state{
+    color: var(--text-dim);
+    font-size:.9rem;
+    padding: 40px 0;
+    text-align:center;
+  }
+
+  .formulacao{
+    margin-bottom: 22px;
+  }
+  .formulacao h3{
+    font-size: .95rem;
+    margin: 0 0 10px;
+    font-weight:700;
+  }
+  .valor-pill{
+    display:inline-block;
+    background: var(--pill-bg);
+    color: var(--pill-text);
+    font-weight:700;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size:.88rem;
+    margin-right: 6px;
+  }
+  .formulacao .linha-principal{
+    font-size:.88rem;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .sub-lista{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .sub-lista li{
+    font-size:.8rem;
+    color: var(--text-dim);
+    padding: 3px 0 3px 16px;
+    position:relative;
+  }
+  .sub-lista li::before{
+    content: "•";
+    position:absolute;
+    left:0;
+    color: var(--red-bright);
+  }
+  .sub-lista li.restricao{
+    color: #f0a5a5;
+  }
+  .sub-lista li.formula{
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: .74rem;
+    line-height: 1.6;
+  }
+  .f-fixo{ color: #ffffff; }
+  .f-var{ color: #7fa8c9; }
+
+  .observacoes{
+    margin-top: 26px;
+    border-top: 1px dashed var(--border);
+    padding-top: 18px;
+  }
+  .observacoes h3{
+    color: var(--red-bright);
+    font-size: 1rem;
+    margin: 0 0 12px;
+  }
+  .obs-item{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    font-size:.85rem;
+    color: #cdd5e3;
+    margin-bottom: 10px;
+    line-height:1.4;
+  }
+  .obs-item .icon{
+    color: var(--red-bright);
+    flex-shrink:0;
+    margin-top:1px;
+  }
+
+  .fonte-tag{
+    margin-top: 20px;
+    display:inline-flex;
+    align-items:center;
+    gap: 6px;
+    font-size: .74rem;
+    color: var(--text-dim);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+  .fonte-tag b{ color: var(--text); }
+
+  .disclaimer-fixed{
+    margin-top: 28px;
+    background: rgba(217,164,65,.08);
+    border: 1px solid rgba(217,164,65,.35);
+    color: var(--amber);
+    font-size: .74rem;
+    line-height: 1.55;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 800px){
+    body{ flex-direction:column; }
+    .sidebar{ width:100%; height:auto; position:relative; border-right:none; border-bottom:1px solid var(--border); max-height: 40vh; }
+    .main{ padding: 20px 18px 50px; }
+    .main-inner{ max-width:100%; }
+    .peso-bar{ flex-wrap:wrap; gap:14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>💊 Doses Pediátricas</h1>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="busca" placeholder="Buscar fármaco...">
+    </div>
+  </div>
+  <div class="sidebar-list" id="lista-farmacos"></div>
+</div>
+
+<div class="main">
+  <div class="main-inner">
+    <div id="conteudo">
+      <div class="empty-state">Selecione um fármaco na lista ao lado para ver as doses pediátricas.</div>
+    </div>
+    <div class="disclaimer-fixed">
+      ⚠️ Ferramenta de apoio exclusiva para profissionais de saúde. Sempre confirmar na bula oficial vigente (ANVISA). Não substitui avaliação clínica individualizada. Doses máximas absolutas devem ser respeitadas independentemente do peso. A contagem de gotas usa referências de conta-gotas do fabricante quando conhecidas, ou o padrão farmacotécnico de 20 gotas/mL — confirme sempre na embalagem.
+    </div>
+  </div>
+</div>
+
+<script>
+let DB = null;
+let farmacoAtual = null;
+let pesoAtual = 0;
+let idadeAtual = 0;
+let idadeUnidade = 'anos'; // 'anos' | 'meses'
+
+fetch('dados.json')
+  .then(r => r.json())
+  .then(data => { DB = data; renderSidebar(); })
+  .catch(() => {
+    document.getElementById('lista-farmacos').innerHTML = '<div class="empty-state">Erro ao carregar dados.json</div>';
+  });
+
+function renderSidebar(filtro=''){
+  const lista = document.getElementById('lista-farmacos');
+  lista.innerHTML = '';
+  const termo = filtro.trim().toLowerCase();
+
+  DB.categorias.forEach(cat => {
+    const farmacosCat = DB.farmacos.filter(f => f.categoria === cat &&
+      (!termo || f.nome.toLowerCase().includes(termo)));
+    if(farmacosCat.length === 0) return;
+
+    const header = document.createElement('div');
+    header.className = 'cat-header';
+    header.textContent = cat;
+    lista.appendChild(header);
+
+    farmacosCat.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'drug-item' + (farmacoAtual && farmacoAtual.id === f.id ? ' active' : '');
+      btn.textContent = f.nome;
+      btn.onclick = () => selecionarFarmaco(f.id);
+      lista.appendChild(btn);
+    });
+  });
+}
+
+document.getElementById('busca').addEventListener('input', e => renderSidebar(e.target.value));
+
+function selecionarFarmaco(id){
+  farmacoAtual = DB.farmacos.find(f => f.id === id);
+  renderSidebar(document.getElementById('busca').value);
+  renderConteudo();
+}
+
+function renderConteudo(){
+  const el = document.getElementById('conteudo');
+  if(!farmacoAtual){
+    el.innerHTML = '<div class="empty-state">Selecione um fármaco na lista ao lado para ver as doses pediátricas.</div>';
+    return;
+  }
+  const f = farmacoAtual;
+  const bulaUrl = 'https://consultas.anvisa.gov.br/#/bulario/?nomeProduto=' + encodeURIComponent(f.nome.split('(')[0].trim());
+
+  el.innerHTML = `
+    <div class="main-header">
+      <div>
+        <h2>${f.nome}</h2>
+        <div class="cat-tag">${f.categoria}</div>
+      </div>
+      <a class="btn-bula" href="${bulaUrl}" target="_blank" rel="noopener">Ver bula ↗</a>
+    </div>
+
+    <div class="peso-bar">
+      <div class="peso-field">
+        <label>Peso</label>
+        <input type="number" id="peso" min="0" step="0.1" placeholder="0" value="${pesoAtual || ''}">
+        <span>kg</span>
+      </div>
+      <div class="peso-field">
+        <label>Idade</label>
+        <input type="number" id="idade" min="0" step="${idadeUnidade === 'meses' ? '1' : '0.1'}" placeholder="0" value="${idadeAtual || ''}">
+        <div class="unidade-toggle">
+          <button type="button" id="btn-meses" class="${idadeUnidade === 'meses' ? 'active' : ''}">Meses</button>
+          <button type="button" id="btn-anos" class="${idadeUnidade === 'anos' ? 'active' : ''}">Anos</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="formulacoes"></div>
+    <div id="observacoes-container"></div>
+    <div class="fonte-tag">📚 Fonte: <b>${f.fonte}</b></div>
+  `;
+
+  document.getElementById('peso').addEventListener('input', e => {
+    pesoAtual = parseFloat(e.target.value) || 0;
+    calcularEExibir();
+  });
+  document.getElementById('idade').addEventListener('input', e => {
+    idadeAtual = parseFloat(e.target.value) || 0;
+    calcularEExibir();
+  });
+  document.getElementById('btn-meses').addEventListener('click', () => trocarUnidadeIdade('meses'));
+  document.getElementById('btn-anos').addEventListener('click', () => trocarUnidadeIdade('anos'));
+
+  calcularEExibir();
+}
+
+function trocarUnidadeIdade(novaUnidade){
+  if(novaUnidade === idadeUnidade) return;
+  // converter o valor já digitado para manter a mesma idade real
+  if(idadeAtual > 0){
+    idadeAtual = (novaUnidade === 'meses') ? arred(idadeAtual * 12) : arred(idadeAtual / 12);
+  }
+  idadeUnidade = novaUnidade;
+  renderConteudo();
+}
+
+function seg(fixo, variavel){
+  return `<span class="f-fixo">${fixo}</span> <span class="f-var">${variavel}</span>`;
+}
+
+function calcularEExibir(){
+  const f = farmacoAtual;
+  const peso = pesoAtual;
+  const idadeMeses = idadeUnidade === 'meses' ? idadeAtual : idadeAtual * 12;
+  const formDiv = document.getElementById('formulacoes');
+  const obsDiv = document.getElementById('observacoes-container');
+  formDiv.innerHTML = '';
+  obsDiv.innerHTML = '';
+
+  // ----- calcular dose base (mg por administração) -----
+  let dose = null; // {min, max} em mg por administração
+  let infoMgKg = null; // para observação dinâmica
+  const db = f.doseBase;
+
+  if(peso > 0){
+    if(db.tipo === 'mgkg_dia'){
+      let diaMin = db.doseMgKg.min * peso;
+      let diaMax = db.doseMgKg.max * peso;
+      let capApplied = false;
+      if(db.doseMaximaDiaMg){
+        if(diaMin > db.doseMaximaDiaMg){ diaMin = db.doseMaximaDiaMg; capApplied = true; }
+        if(diaMax > db.doseMaximaDiaMg){ diaMax = db.doseMaximaDiaMg; capApplied = true; }
+      }
+      const frac = db.fracionamento || 1;
+      dose = { min: diaMin/frac, max: diaMax/frac, capApplied };
+      infoMgKg = { unidade: 'dia', min: db.doseMgKg.min, max: db.doseMgKg.max };
+      dose.formulaBase = seg(
+        'Dose diária = peso × mg/kg/dia',
+        `→ ${peso} kg × ${db.doseMgKg.min}–${db.doseMgKg.max} mg/kg/dia = ${arred(db.doseMgKg.min*peso)}–${arred(db.doseMgKg.max*peso)} mg/dia${capApplied ? ' (ajustado ao teto máximo)' : ''}`
+      ) + ' — ' + seg(
+        `Dose/administração = total ÷ ${frac} tomada(s)`,
+        `→ = ${arred(dose.min)}–${arred(dose.max)} mg`
+      );
+    } else if(db.tipo === 'mgkg_dose'){
+      let doseMin = db.doseMgKg.min * peso;
+      let doseMax = db.doseMgKg.max * peso;
+      let capApplied = false;
+      if(db.doseMaximaDoseMg){
+        if(doseMin > db.doseMaximaDoseMg){ doseMin = db.doseMaximaDoseMg; capApplied = true; }
+        if(doseMax > db.doseMaximaDoseMg){ doseMax = db.doseMaximaDoseMg; capApplied = true; }
+      }
+      dose = { min: doseMin, max: doseMax, capApplied };
+      infoMgKg = { unidade: 'dose', min: db.doseMgKg.min, max: db.doseMgKg.max };
+      dose.formulaBase = seg(
+        'Dose por administração = peso × mg/kg/dose',
+        `→ ${peso} kg × ${db.doseMgKg.min}–${db.doseMgKg.max} mg/kg/dose = ${arred(doseMin)}–${arred(doseMax)} mg${capApplied ? ' (ajustado ao teto máximo)' : ''}`
+      );
+    } else if(db.tipo === 'faixa_fixa'){
+      let faixa;
+      if(db.faixasPorIdade){
+        faixa = db.faixas.find(fx => idadeMeses <= fx.idadeMaxMeses) || db.faixas[db.faixas.length-1];
+      } else {
+        faixa = db.faixas.find(fx => peso <= fx.pesoMaxKg) || db.faixas[db.faixas.length-1];
+      }
+      if(faixa.doseMg !== null && faixa.doseMg !== undefined){
+        dose = { min: faixa.doseMg, max: faixa.doseMg, capApplied:false };
+        dose.formulaBase = seg(
+          `Dose fixa por ${db.faixasPorIdade ? 'idade' : 'peso'} (não calculada por mg/kg)`,
+          `→ ${faixa.descricao}: ${faixa.doseMg} mg`
+        );
+      }
+    }
+  }
+
+  // ----- idade mínima: aviso -----
+  let avisoIdade = null;
+  if(f.idadeMinimaMeses && idadeAtual > 0 && idadeMeses < f.idadeMinimaMeses){
+    avisoIdade = `Idade informada abaixo da idade mínima orientada (${formatarIdadeMinima(f.idadeMinimaMeses)}). Reavaliar indicação.`;
+  }
+
+  // ----- render formulações -----
+  f.formulacoes.forEach(form => {
+    const card = document.createElement('div');
+    card.className = 'formulacao';
+
+    let valorTexto = '—';
+    let subItens = [];
+    let formulaCompleta = null;
+
+    if(peso <= 0){
+      valorTexto = '00';
+    } else if(form.tipo === 'gotas' && form.calculoEspecial === 'gotas_por_kg'){
+      const gMin = Math.round(peso * 1);
+      const gMax = Math.round(peso * 2);
+      valorTexto = (gMin === gMax) ? `${gMax} gotas` : `${gMin} – ${gMax} gotas`;
+      formulaCompleta = seg('Gotas = peso × 1-2 gotas/kg', `→ ${peso} kg × 1–2 gotas/kg = ${gMin}–${gMax} gotas`);
+    } else if(dose){
+      const doseMin = form.doseMaximaPorDoseMg ? Math.min(dose.min, form.doseMaximaPorDoseMg) : dose.min;
+      const doseMax = form.doseMaximaPorDoseMg ? Math.min(dose.max, form.doseMaximaPorDoseMg) : dose.max;
+
+      if(form.tipo === 'gotas' && form.mgPorGota){
+        const gMin = Math.round(doseMin / form.mgPorGota);
+        const gMax = Math.round(doseMax / form.mgPorGota);
+        valorTexto = (gMin === gMax) ? `${gMax} gotas` : `${gMin} – ${gMax} gotas`;
+        formulaCompleta = (dose.formulaBase || '') + ' — ' + seg('Gotas = dose ÷ mg/gota', `→ ${arred(doseMin)}–${arred(doseMax)} mg ÷ ${form.mgPorGota} mg/gota = ${gMin}–${gMax} gotas`);
+      } else if((form.tipo === 'liquido' || form.tipo === 'injetavel') && form.concentracaoMgMl){
+        const mlMin = doseMin / form.concentracaoMgMl;
+        const mlMax = doseMax / form.concentracaoMgMl;
+        valorTexto = (Math.abs(mlMax-mlMin) < 0.05) ? `${arred(mlMax)} mL` : `${arred(mlMin)} – ${arred(mlMax)} mL`;
+        formulaCompleta = (dose.formulaBase || '') + ' — ' + seg('Volume = dose ÷ concentração', `→ ${arred(doseMin)}–${arred(doseMax)} mg ÷ ${form.concentracaoMgMl} mg/mL = ${arred(mlMin)}–${arred(mlMax)} mL`);
+      } else if(form.tipo === 'comprimido' && form.mgPorComprimido){
+        let cMin = arredondarMeio(doseMin / form.mgPorComprimido);
+        let cMax = arredondarMeio(doseMax / form.mgPorComprimido);
+        if(cMax < 0.5){
+          valorTexto = 'fracionamento não recomendado';
+          subItens.push({tipo:'restricao', texto:'Dose calculada resulta em fração muito pequena do comprimido — preferir apresentação líquida ou gotas.'});
+        } else {
+          valorTexto = (cMin === cMax) ? `${formatarComprimidos(cMax)}` : `${formatarComprimidos(cMin)} – ${formatarComprimidos(cMax)}`;
+        }
+        formulaCompleta = (dose.formulaBase || '') + ' — ' + seg('Comprimidos = dose ÷ mg/comprimido', `→ ${arred(doseMin)}–${arred(doseMax)} mg ÷ ${form.mgPorComprimido} mg = ${cMin}–${cMax} comp.`);
+      } else {
+        valorTexto = `${arred(doseMin)} – ${arred(doseMax)} mg`;
+        formulaCompleta = dose.formulaBase || null;
+      }
+    }
+
+    // dose máxima por dose (texto)
+    if(form.doseMaximaPorDoseMg){
+      subItens.push({tipo:'info', texto:`dose máxima de ${form.doseMaximaPorDoseMg} mg por dose (via ${form.tipo === 'injetavel' ? 'injetável' : 'oral'})`});
+    } else if(db.doseMaximaDoseMg && form.tipo !== 'comprimido'){
+      subItens.push({tipo:'info', texto:`dose máxima de ${db.doseMaximaDoseMg} mg por dose`});
+    }
+
+    if(form.apresentacaoTexto){
+      subItens.push({tipo:'info', texto:`apresentação: ${form.apresentacaoTexto}`});
+    }
+    if(form.diluicaoTexto){
+      subItens.push({tipo:'info', texto: form.diluicaoTexto});
+    }
+    (form.restricoes||[]).forEach(r => subItens.push({tipo:'restricao', texto:r}));
+    if(formulaCompleta){
+      subItens.push({tipo:'formula', texto: `<span class="f-fixo">Fórmula:</span> ${formulaCompleta}`});
+    }
+
+    card.innerHTML = `
+      <h3>${form.rotulo}</h3>
+      <div class="linha-principal"><span class="valor-pill">${valorTexto}</span>${form.viaTexto || ''}</div>
+      <ul class="sub-lista">
+        ${subItens.map(i => `<li class="${i.tipo}">${i.texto}</li>`).join('')}
+      </ul>
+    `;
+    formDiv.appendChild(card);
+  });
+
+  // ----- observações -----
+  const obsItens = [];
+
+  if(dose && infoMgKg && peso > 0){
+    const mediaDose = (dose.min + dose.max) / 2;
+    const mgkgCalc = arred(mediaDose / peso);
+    const unidadeTxt = infoMgKg.unidade === 'dia' ? 'mg/kg/dia' : 'mg/kg/dose';
+    const recTxt = infoMgKg.min === infoMgKg.max ? `${infoMgKg.min} ${unidadeTxt}` : `${infoMgKg.min}-${infoMgKg.max} ${unidadeTxt}`;
+    obsItens.push(`Dose calculada equivalente a aproximadamente ${mgkgCalc} ${unidadeTxt} (recomendação de referência: ${recTxt}).`);
+  }
+  if(dose && dose.capApplied){
+    obsItens.push('A dose calculada pelo peso ultrapassaria o teto recomendado — valor ajustado para a dose máxima de segurança.');
+  }
+  if(avisoIdade){ obsItens.push(avisoIdade); }
+  if(f.idadeMinimaMeses > 0){
+    obsItens.push(`Não recomendado / contraindicado o uso para menores de ${formatarIdadeMinima(f.idadeMinimaMeses)}.`);
+  }
+  if(db.doseMaximaDiaMg){
+    obsItens.push(`Dose máxima diária de ${formatarMg(db.doseMaximaDiaMg)}.`);
+  }
+  (f.observacoesExtras || []).forEach(o => obsItens.push(o));
+
+  if(obsItens.length){
+    obsDiv.innerHTML = `
+      <div class="observacoes">
+        <h3>Observações</h3>
+        ${obsItens.map(o => `<div class="obs-item"><span class="icon">⊘</span><span>${o}</span></div>`).join('')}
+      </div>
+    `;
+  }
+}
+
+function arred(n){ return Math.round(n * 100) / 100; }
+
+function arredondarMeio(n){ return Math.round(n * 2) / 2; }
+
+function formatarComprimidos(n){
+  if(n === 1) return '1 comprimido';
+  if(n % 1 === 0) return `${n} comprimidos`;
+  return `${n} comprimido${n > 1 ? 's' : ''}`.replace('.5', '½');
+}
+
+function formatarMg(mg){
+  if(mg >= 1000) return `${arred(mg/1000)} g`;
+  return `${mg} mg`;
+}
+
+function formatarIdadeMinima(meses){
+  if(meses < 12) return meses + ' meses';
+  const anos = meses / 12;
+  return (anos % 1 === 0 ? anos : anos.toFixed(1)) + ' anos';
+}
+</script>
+
+</body>
+</html>
