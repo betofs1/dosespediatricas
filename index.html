@@ -28,7 +28,45 @@
     background: var(--bg);
     color: var(--text);
     display:flex;
-    min-height:100vh;
+    flex-direction: column;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* ---------- Topbar ---------- */
+  .topbar-app{
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items:center;
+    height: 64px;
+    flex-shrink:0;
+    padding: 0 24px;
+    background: var(--sidebar);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-app .logo-wrap{
+    grid-column:1;
+    display:flex;
+    align-items:center;
+  }
+  .topbar-app .logo-wrap img{
+    height: 34px;
+    width:auto;
+  }
+  .topbar-app .titulo-central{
+    grid-column:2;
+    text-align:center;
+    font-size: 1.15rem;
+    font-weight:700;
+    white-space:nowrap;
+    letter-spacing:.2px;
+  }
+  .topbar-app .spacer{ grid-column:3; }
+
+  .app-body{
+    display:flex;
+    flex:1;
+    min-height:0;
   }
 
   /* ---------- Sidebar ---------- */
@@ -39,17 +77,10 @@
     border-right: 1px solid var(--border);
     display:flex;
     flex-direction:column;
-    height:100vh;
-    position: sticky;
-    top:0;
+    height:100%;
   }
   .sidebar-header{
-    padding: 20px 18px 12px;
-  }
-  .sidebar-header h1{
-    font-size: 1.15rem;
-    margin:0 0 12px;
-    letter-spacing:.2px;
+    padding: 16px 18px 12px;
   }
   .search-box{
     display:flex;
@@ -111,6 +142,8 @@
     display:flex;
     justify-content:center;
     padding: 26px 40px 60px;
+    overflow-y:auto;
+    height:100%;
   }
   .main-inner{
     width:100%;
@@ -307,9 +340,12 @@
   }
 
   @media (max-width: 800px){
-    body{ flex-direction:column; }
-    .sidebar{ width:100%; height:auto; position:relative; border-right:none; border-bottom:1px solid var(--border); max-height: 40vh; }
-    .main{ padding: 20px 18px 50px; }
+    body{ height:auto; overflow:visible; }
+    .topbar-app{ padding: 0 14px; }
+    .topbar-app .titulo-central{ font-size: .95rem; }
+    .app-body{ flex-direction:column; min-height:auto; }
+    .sidebar{ width:100%; height:auto; border-right:none; border-bottom:1px solid var(--border); max-height: 40vh; }
+    .main{ padding: 20px 18px 50px; height:auto; overflow-y:visible; }
     .main-inner{ max-width:100%; }
     .peso-bar{ flex-wrap:wrap; gap:14px; }
   }
@@ -317,24 +353,33 @@
 </head>
 <body>
 
-<div class="sidebar">
-  <div class="sidebar-header">
-    <h1>💊 Doses Pediátricas</h1>
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" id="busca" placeholder="Buscar fármaco...">
-    </div>
+<div class="topbar-app">
+  <div class="logo-wrap">
+    <img src="logo.png" alt="FarmaPrática">
   </div>
-  <div class="sidebar-list" id="lista-farmacos"></div>
+  <div class="titulo-central">💊 Doses Pediátricas</div>
+  <div class="spacer"></div>
 </div>
 
-<div class="main">
-  <div class="main-inner">
-    <div id="conteudo">
-      <div class="empty-state">Selecione um fármaco na lista ao lado para ver as doses pediátricas.</div>
+<div class="app-body">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="busca" placeholder="Buscar fármaco...">
+      </div>
     </div>
-    <div class="disclaimer-fixed">
-      ⚠️ Ferramenta de apoio exclusiva para profissionais de saúde. Sempre confirmar na bula oficial vigente (ANVISA). Não substitui avaliação clínica individualizada. Doses máximas absolutas devem ser respeitadas independentemente do peso. A contagem de gotas usa referências de conta-gotas do fabricante quando conhecidas, ou o padrão farmacotécnico de 20 gotas/mL — confirme sempre na embalagem.
+    <div class="sidebar-list" id="lista-farmacos"></div>
+  </div>
+
+  <div class="main">
+    <div class="main-inner">
+      <div id="conteudo">
+        <div class="empty-state">Selecione um fármaco na lista ao lado para ver as doses pediátricas.</div>
+      </div>
+      <div class="disclaimer-fixed">
+        ⚠️ Ferramenta de apoio exclusiva para profissionais de saúde. Sempre confirmar na bula oficial vigente (ANVISA). Não substitui avaliação clínica individualizada. Doses máximas absolutas devem ser respeitadas independentemente do peso. A contagem de gotas usa referências de conta-gotas do fabricante quando conhecidas, ou o padrão farmacotécnico de 20 gotas/mL — confirme sempre na embalagem.
+      </div>
     </div>
   </div>
 </div>
@@ -507,12 +552,28 @@ function calcularEExibir(){
       } else {
         faixa = db.faixas.find(fx => peso <= fx.pesoMaxKg) || db.faixas[db.faixas.length-1];
       }
-      if(faixa.doseMg !== null && faixa.doseMg !== undefined){
-        dose = { min: faixa.doseMg, max: faixa.doseMg, capApplied:false };
+      if(faixa.mgPorKg){
+        const frac = faixa.fracionamento || 1;
+        const diaMg = faixa.mgPorKg * peso;
+        dose = { min: diaMg/frac, max: diaMg/frac, capApplied:false };
         dose.formulaBase = seg(
-          `Dose fixa por ${db.faixasPorIdade ? 'idade' : 'peso'} (não calculada por mg/kg)`,
-          `→ ${faixa.descricao}: ${faixa.doseMg} mg`
+          `Dose diária (faixa: ${faixa.descricao}) = peso × ${faixa.mgPorKg} mg/kg/dia`,
+          `→ ${peso} kg × ${faixa.mgPorKg} mg/kg/dia = ${arred(diaMg)} mg/dia ÷ ${frac} tomada(s) = ${arred(dose.min)} mg`
         );
+      } else if(faixa.doseMg !== null && faixa.doseMg !== undefined){
+        if(typeof faixa.doseMg === 'object'){
+          dose = { min: faixa.doseMg.min, max: faixa.doseMg.max, capApplied:false };
+          dose.formulaBase = seg(
+            `Dose fixa por ${db.faixasPorIdade ? 'idade' : 'peso'} (faixa: ${faixa.descricao})`,
+            `→ ${faixa.doseMg.min}–${faixa.doseMg.max} mg`
+          );
+        } else {
+          dose = { min: faixa.doseMg, max: faixa.doseMg, capApplied:false };
+          dose.formulaBase = seg(
+            `Dose fixa por ${db.faixasPorIdade ? 'idade' : 'peso'} (não calculada por mg/kg)`,
+            `→ ${faixa.descricao}: ${faixa.doseMg} mg`
+          );
+        }
       }
     }
   }
@@ -532,7 +593,16 @@ function calcularEExibir(){
     let subItens = [];
     let formulaCompleta = null;
 
-    if(peso <= 0){
+    if(form.faixasTexto){
+      if(idadeAtual <= 0){
+        valorTexto = 'informe a idade';
+      } else {
+        const tier = form.faixasTexto.find(t => idadeMeses <= t.idadeMaxMeses) || form.faixasTexto[form.faixasTexto.length-1];
+        valorTexto = tier.texto;
+      }
+    } else if(form.textoDoseFixo){
+      valorTexto = form.textoDoseFixo;
+    } else if(peso <= 0){
       valorTexto = '00';
     } else if(form.tipo === 'gotas' && form.calculoEspecial === 'gotas_por_kg'){
       const gMin = Math.round(peso * 1);
@@ -636,7 +706,9 @@ function arredondarMeio(n){ return Math.round(n * 2) / 2; }
 function formatarComprimidos(n){
   if(n === 1) return '1 comprimido';
   if(n % 1 === 0) return `${n} comprimidos`;
-  return `${n} comprimido${n > 1 ? 's' : ''}`.replace('.5', '½');
+  const inteiro = Math.floor(n);
+  const sufixo = inteiro > 0 ? `${inteiro}½` : '½';
+  return `${sufixo} comprimido${n > 1 ? 's' : ''}`;
 }
 
 function formatarMg(mg){

@@ -967,6 +967,283 @@
         "Dose calculada em ferro elementar. Profilático: 1-2 mg/kg/dia | Terapêutico: 3-6 mg/kg/dia."
       ],
       "fonte": "Bula ANVISA / SBP"
+    },
+    {
+      "id": "acetilcisteina",
+      "nome": "Acetilcisteína",
+      "categoria": "Antitussivos / Mucolíticos",
+      "doseBase": {
+        "tipo": "mgkg_dia",
+        "doseMgKg": {
+          "min": 9,
+          "max": 15
+        },
+        "fracionamento": 3,
+        "doseMaximaDiaMg": 600
+      },
+      "idadeMinimaMeses": 24,
+      "formulacoes": [
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope pediátrico 20 mg/mL",
+          "viaTexto": "via oral a cada 8 horas",
+          "concentracaoMgMl": 20,
+          "apresentacaoTexto": "frasco com 120 mL + copo dosador"
+        },
+        {
+          "tipo": "comprimido",
+          "rotulo": "Envelope/sachê 200 mg",
+          "viaTexto": "via oral a cada 8 horas",
+          "mgPorComprimido": 200,
+          "apresentacaoTexto": "envelope de 200 mg (uso ≥ 2 anos)"
+        }
+      ],
+      "observacoesExtras": [
+        "Aprovação de bula para ≥ 2 anos considera dose fixa de 200 mg a cada 8 horas (600 mg/dia); a critério médico pode ser dobrada.",
+        "Não associar com antitussígenos — a redução do reflexo da tosse pode causar acúmulo de secreções.",
+        "Contém sorbitol — cautela em diabéticos e intolerância hereditária à frutose."
+      ],
+      "fonte": "Bula ANVISA (Eurofarma/EMS/Geolab)"
+    },
+    {
+      "id": "acebrofilina",
+      "nome": "Acebrofilina",
+      "categoria": "Antitussivos / Mucolíticos",
+      "doseBase": {
+        "tipo": "faixa_fixa",
+        "faixasPorIdade": true,
+        "faixas": [
+          {
+            "idadeMaxMeses": 36,
+            "mgPorKg": 2,
+            "fracionamento": 2,
+            "descricao": "2 a 3 anos"
+          },
+          {
+            "idadeMaxMeses": 72,
+            "doseMg": 50,
+            "fracionamento": 2,
+            "descricao": "3 a 6 anos (dose fixa ~50 mg/dia)"
+          },
+          {
+            "idadeMaxMeses": 144,
+            "doseMg": 100,
+            "fracionamento": 2,
+            "descricao": "6 a 12 anos (dose fixa ~100 mg/dia)"
+          },
+          {
+            "idadeMaxMeses": 9999,
+            "doseMg": 200,
+            "fracionamento": 2,
+            "descricao": "≥ 12 anos / adultos (dose fixa ~200 mg/dia)"
+          }
+        ]
+      },
+      "idadeMinimaMeses": 24,
+      "formulacoes": [
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope pediátrico 5 mg/mL",
+          "viaTexto": "via oral a cada 12 horas",
+          "concentracaoMgMl": 5,
+          "apresentacaoTexto": "frasco com 120 mL + copo dosador (uso até ~12 anos)"
+        },
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope adulto 10 mg/mL",
+          "viaTexto": "via oral a cada 12 horas",
+          "concentracaoMgMl": 10,
+          "apresentacaoTexto": "frasco com 120 mL (uso ≥ 12 anos)"
+        }
+      ],
+      "observacoesExtras": [
+        "Sem dose máxima estabelecida pelo fabricante para as faixas etárias descritas.",
+        "Dose de 2 a 3 anos calculada por peso (2 mg/kg/dia); demais faixas seguem dose fixa por idade, conforme bula."
+      ],
+      "fonte": "Bula ANVISA (Ache/Eurofarma/Cimed/Geolab)"
+    },
+    {
+      "id": "levodropropizina",
+      "nome": "Levodropropizina",
+      "categoria": "Antitussivos / Mucolíticos",
+      "doseBase": {
+        "tipo": "mgkg_dose",
+        "doseMgKg": {
+          "min": 1,
+          "max": 1
+        },
+        "vezesDia": 3,
+        "doseMaximaDiaMg": 180
+      },
+      "idadeMinimaMeses": 24,
+      "formulacoes": [
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope 30 mg/5 mL (6 mg/mL)",
+          "viaTexto": "via oral, até 3x/dia (intervalo mínimo de 6h)",
+          "concentracaoMgMl": 6,
+          "apresentacaoTexto": "frasco com 120 mL + copo dosador"
+        },
+        {
+          "tipo": "gotas",
+          "rotulo": "Solução oral (gotas) 30 mg/mL (1,5 mg/gota)",
+          "viaTexto": "via oral, até 3x/dia (intervalo mínimo de 6h)",
+          "mgPorGota": 1.5,
+          "apresentacaoTexto": "frasco gotejador"
+        }
+      ],
+      "observacoesExtras": [
+        "Contraindicado para menores de 2 anos.",
+        "Dose máxima diária não deve ultrapassar 30 mL de xarope (equivalente a ~180 mg)."
+      ],
+      "fonte": "Bula ANVISA (Aché/EMS)"
+    },
+    {
+      "id": "dropropizina",
+      "nome": "Dropropizina",
+      "categoria": "Antitussivos / Mucolíticos",
+      "doseBase": {
+        "tipo": "faixa_fixa",
+        "faixasPorIdade": true,
+        "faixas": [
+          {
+            "idadeMaxMeses": 36,
+            "doseMg": {
+              "min": 3.75,
+              "max": 7.5
+            },
+            "fracionamento": 1,
+            "descricao": "2 a 3 anos (2,5–5 mL do xarope 1,5 mg/mL)"
+          },
+          {
+            "idadeMaxMeses": 144,
+            "doseMg": 15,
+            "fracionamento": 1,
+            "descricao": "acima de 3 anos (10 mL do xarope 1,5 mg/mL)"
+          },
+          {
+            "idadeMaxMeses": 9999,
+            "doseMg": 30,
+            "fracionamento": 1,
+            "descricao": "≥ 12 anos / adultos (10 mL do xarope adulto 3 mg/mL)"
+          }
+        ]
+      },
+      "idadeMinimaMeses": 24,
+      "formulacoes": [
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope pediátrico 1,5 mg/mL",
+          "viaTexto": "via oral, 4x/dia",
+          "concentracaoMgMl": 1.5,
+          "apresentacaoTexto": "frasco com 120 mL + seringa dosadora (uso até ~12 anos)"
+        },
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope adulto 3 mg/mL",
+          "viaTexto": "via oral, 4x/dia",
+          "concentracaoMgMl": 3,
+          "apresentacaoTexto": "frasco com 120 mL + copo dosador (uso ≥ 12 anos)"
+        }
+      ],
+      "observacoesExtras": [
+        "Contraindicado em tosse produtiva (com catarro), insuficiência respiratória grave e asma.",
+        "Cada administração é feita 4 vezes ao dia — dose exibida refere-se a cada tomada."
+      ],
+      "fonte": "Bula ANVISA (Biosintética/Prati-Donaduzzi)"
+    },
+    {
+      "id": "betametasona",
+      "nome": "Betametasona",
+      "categoria": "Outros",
+      "doseBase": {
+        "tipo": "mgkg_dia",
+        "doseMgKg": {
+          "min": 0.017,
+          "max": 0.25
+        },
+        "fracionamento": 1
+      },
+      "idadeMinimaMeses": 0,
+      "formulacoes": [
+        {
+          "tipo": "gotas",
+          "rotulo": "Solução oral (gotas) 0,5 mg/mL (26 gotas/mL · ~0,0192 mg/gota)",
+          "viaTexto": "via oral, dose única preferencialmente pela manhã",
+          "mgPorGota": 0.0192,
+          "apresentacaoTexto": "frasco com 15 mL"
+        },
+        {
+          "tipo": "comprimido",
+          "rotulo": "Comprimido 0,5 mg",
+          "viaTexto": "via oral, dose única preferencialmente pela manhã",
+          "mgPorComprimido": 0.5,
+          "apresentacaoTexto": "cartela de comprimidos"
+        },
+        {
+          "tipo": "comprimido",
+          "rotulo": "Comprimido 2 mg",
+          "viaTexto": "via oral, dose única preferencialmente pela manhã",
+          "mgPorComprimido": 2,
+          "apresentacaoTexto": "cartela de comprimidos"
+        }
+      ],
+      "observacoesExtras": [
+        "Bula cita, a título ilustrativo, dose máxima diária de 5 mg para uma criança de 20 kg (equivale a ~0,25 mg/kg/dia).",
+        "Corticoterapia sistêmica: reduzir gradualmente ao final do tratamento; evitar suspensão abrupta em cursos prolongados."
+      ],
+      "fonte": "Bula ANVISA (Celestone/EMS)"
+    },
+    {
+      "id": "dexclor_betametasona",
+      "nome": "Dexclorfeniramina + Betametasona",
+      "categoria": "Anti-histamínicos",
+      "doseBase": {
+        "tipo": "individualizado"
+      },
+      "idadeMinimaMeses": 24,
+      "formulacoes": [
+        {
+          "tipo": "liquido",
+          "rotulo": "Xarope 2 mg + 0,25 mg / 5 mL (0,4 + 0,05 mg/mL)",
+          "viaTexto": "via oral, conforme faixa etária",
+          "concentracaoMgMl": null,
+          "apresentacaoTexto": "frasco com 120 mL + copo dosador",
+          "faixasTexto": [
+            {
+              "idadeMaxMeses": 72,
+              "texto": "1,25–2,5 mL, 3x/dia (máx. 10 mL/dia)"
+            },
+            {
+              "idadeMaxMeses": 144,
+              "texto": "2,5 mL, 3x/dia (máx. 20 mL/dia)"
+            },
+            {
+              "idadeMaxMeses": 9999,
+              "texto": "5–10 mL, 3–4x/dia (máx. 40 mL/dia)"
+            }
+          ],
+          "restricoes": [
+            "Dose não é calculada pelo peso — ajustar conforme gravidade clínica e resposta terapêutica, respeitando o teto máximo diário."
+          ]
+        },
+        {
+          "tipo": "comprimido",
+          "rotulo": "Comprimido 2 mg + 0,25 mg",
+          "viaTexto": "via oral, 3x/dia",
+          "mgPorComprimido": null,
+          "apresentacaoTexto": "cartela de comprimidos",
+          "textoDoseFixo": "1 comprimido, 3x/dia (máx. 4 comprimidos/dia)",
+          "restricoes": [
+            "Contraindicado para menores de 12 anos."
+          ]
+        }
+      ],
+      "observacoesExtras": [
+        "Associação de anti-histamínico (dexclorfeniramina) com corticoide (betametasona) — a dose deve ser individualizada pela gravidade clínica, não apenas pelo peso.",
+        "Xarope/gotas contraindicados para menores de 2 anos; comprimidos contraindicados para menores de 12 anos."
+      ],
+      "fonte": "Bula ANVISA (Cifarma/Cristália/Pharlab/Prati-Donaduzzi)"
     }
   ]
 }
