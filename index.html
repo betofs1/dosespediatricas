@@ -33,19 +33,23 @@
     overflow:hidden;
   }
 
-  /* ---------- Topbar ----------  */
+  /* ---------- Topbar ---------- */
   .topbar-app{
     display:grid;
     grid-template-columns: 1fr auto 1fr;
     align-items:center;
-    height: 64px;
+    min-height: 64px;
     flex-shrink:0;
-    padding: 0 24px;
+    padding: 10px 24px;
     background: var(--sidebar);
     border-bottom: 1px solid var(--border);
   }
   .topbar-app .logo-wrap{
     grid-column:1;
+    display:flex;
+    align-items:center;
+  }
+  .topbar-app .logo-wrap a{
     display:flex;
     align-items:center;
   }
@@ -56,10 +60,18 @@
   .topbar-app .titulo-central{
     grid-column:2;
     text-align:center;
-    font-size: 1.15rem;
-    font-weight:700;
+  }
+  .topbar-app .titulo-principal{
+    font-size: 1.1rem;
+    font-weight:800;
     white-space:nowrap;
-    letter-spacing:.2px;
+    letter-spacing:.6px;
+  }
+  .topbar-app .titulo-descricao{
+    font-size: .74rem;
+    color: var(--text-dim);
+    margin-top:2px;
+    white-space:nowrap;
   }
   .topbar-app .spacer{ grid-column:3; }
 
@@ -341,8 +353,9 @@
 
   @media (max-width: 800px){
     body{ height:auto; overflow:visible; }
-    .topbar-app{ padding: 0 14px; }
-    .topbar-app .titulo-central{ font-size: .95rem; }
+    .topbar-app{ padding: 8px 14px; }
+    .topbar-app .titulo-principal{ font-size: .85rem; white-space:normal; }
+    .topbar-app .titulo-descricao{ font-size: .64rem; white-space:normal; }
     .app-body{ flex-direction:column; min-height:auto; }
     .sidebar{ width:100%; height:auto; border-right:none; border-bottom:1px solid var(--border); max-height: 40vh; }
     .main{ padding: 20px 18px 50px; height:auto; overflow-y:visible; }
@@ -355,9 +368,14 @@
 
 <div class="topbar-app">
   <div class="logo-wrap">
-    <img src="logo.png" alt="FarmaPrática">
+    <a href="../index.html" title="Voltar para a página inicial do FarmaPrática">
+      <img src="logo.png" alt="FarmaPrática">
+    </a>
   </div>
-  <div class="titulo-central">💊 Doses Pediátricas</div>
+  <div class="titulo-central">
+    <div class="titulo-principal">CALCULADORA PEDIÁTRICA</div>
+    <div class="titulo-descricao">Doses por peso ou idade: gotas, xarope e comprimidos com base em bulas e diretrizes clínicas</div>
+  </div>
   <div class="spacer"></div>
 </div>
 
@@ -593,7 +611,14 @@ function calcularEExibir(){
     let subItens = [];
     let formulaCompleta = null;
 
-    if(form.faixasTexto){
+    if(form.faixasTextoPeso){
+      if(peso <= 0){
+        valorTexto = 'informe o peso';
+      } else {
+        const tier = form.faixasTextoPeso.find(t => peso <= t.pesoMaxKg) || form.faixasTextoPeso[form.faixasTextoPeso.length-1];
+        valorTexto = tier.texto;
+      }
+    } else if(form.faixasTexto){
       if(idadeAtual <= 0){
         valorTexto = 'informe a idade';
       } else {
