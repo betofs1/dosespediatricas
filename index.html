@@ -6,19 +6,20 @@
 <title>Doses Pediátricas</title>
 <style>
   :root{
-    --bg: #0b0f1a;
-    --panel: #0f1626;
-    --sidebar: #0c1220;
-    --card: #121a2b;
-    --border: #232f45;
+    --bg: #101b34;
+    --panel: #17233f;
+    --sidebar: #131f3a;
+    --card: #1a2748;
+    --border: #2c3d64;
     --red-dark: #4a0d10;
     --red: #b1181f;
     --red-bright: #e8232c;
     --text: #eef1f6;
-    --text-dim: #8d99b3;
+    --text-dim: #93a2c2;
     --amber: #e8b84b;
     --pill-bg: #3a2d0e;
     --pill-text: #f4cf6e;
+    --sidebar-w: 280px;
   }
   *{ box-sizing: border-box; }
   html,body{ height:100%; }
@@ -36,11 +37,11 @@
   /* ---------- Topbar ---------- */
   .topbar-app{
     display:grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: var(--sidebar-w) 1fr;
     align-items:center;
     min-height: 64px;
     flex-shrink:0;
-    padding: 10px 24px;
+    padding: 10px 24px 10px 0;
     background: var(--sidebar);
     border-bottom: 1px solid var(--border);
   }
@@ -48,6 +49,7 @@
     grid-column:1;
     display:flex;
     align-items:center;
+    padding-left: 24px;
   }
   .topbar-app .logo-wrap a{
     display:flex;
@@ -59,6 +61,9 @@
   }
   .topbar-app .titulo-central{
     grid-column:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
     text-align:center;
   }
   .topbar-app .titulo-principal{
@@ -73,7 +78,12 @@
     margin-top:2px;
     white-space:nowrap;
   }
-  .topbar-app .spacer{ grid-column:3; }
+
+  @media (max-width: 800px){
+    .topbar-app{ grid-template-columns: 1fr; padding: 8px 14px; }
+    .topbar-app .logo-wrap{ padding-left:0; justify-content:center; margin-bottom:6px; }
+    .topbar-app .titulo-central{ grid-column:1; }
+  }
 
   .app-body{
     display:flex;
@@ -83,7 +93,7 @@
 
   /* ---------- Sidebar ---------- */
   .sidebar{
-    width: 280px;
+    width: var(--sidebar-w);
     flex-shrink:0;
     background: var(--sidebar);
     border-right: 1px solid var(--border);
@@ -159,17 +169,20 @@
   }
   .main-inner{
     width:100%;
-    max-width: 900px;
+    max-width: 820px;
   }
   .main-header{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
   }
   .main-header h2{
     margin:0;
-    font-size: 1.6rem;
+    font-size: 1.75rem;
+    letter-spacing:-.2px;
   }
   .main-header .cat-tag{
     display:inline-block;
@@ -182,107 +195,194 @@
     border: 1px solid rgba(232,184,75,.3);
     padding: 3px 10px;
     border-radius: 20px;
-    margin-top:6px;
+    margin-top:8px;
   }
   .btn-bula{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
     border: 1px solid var(--red-bright);
     color: var(--red-bright);
     background: transparent;
-    padding: 7px 16px;
+    padding: 8px 18px;
     border-radius: 20px;
     font-size:.8rem;
-    font-weight:600;
+    font-weight:700;
     cursor:pointer;
     text-decoration:none;
     white-space:nowrap;
+    transition: background .15s, transform .1s;
   }
-  .btn-bula:hover{ background: rgba(232,35,44,.1); }
+  .btn-bula:hover{ background: rgba(232,35,44,.12); transform: translateY(-1px); }
 
   .peso-bar{
-    background: var(--panel);
+    background: linear-gradient(135deg, rgba(177,24,31,.1), rgba(232,184,75,.05));
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 18px;
+    border-radius: 14px;
+    padding: 16px 22px;
     display:flex;
-    gap: 26px;
+    gap: 32px;
     align-items:center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
-  .peso-field{ display:flex; align-items:center; gap:8px; }
-  .peso-field label{ font-size:.82rem; color: var(--text-dim); font-weight:600; }
+  .peso-field{ display:flex; align-items:center; gap:10px; }
+  .peso-field .field-icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(232,35,44,.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 1rem;
+    flex-shrink:0;
+  }
+  .peso-field .field-inputs{ display:flex; flex-direction:column; gap:4px; }
+  .peso-field label{ font-size:.7rem; color: var(--text-dim); font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+  .peso-field .field-row{ display:flex; align-items:center; gap:8px; }
   .peso-field input{
-    width: 80px;
+    width: 84px;
     background:#0c1422;
     border:1px solid var(--border);
-    border-radius:6px;
+    border-radius:8px;
     color:var(--text);
-    padding:6px 8px;
-    font-size:.9rem;
+    padding:7px 10px;
+    font-size: 1rem;
+    font-weight:600;
     outline:none;
+    transition: border-color .15s, box-shadow .15s;
   }
-  .peso-field input:focus{ border-color: var(--red-bright); }
-  .peso-field span{ font-size:.8rem; color: var(--text-dim); }
+  .peso-field input:focus{ border-color: var(--red-bright); box-shadow: 0 0 0 3px rgba(232,35,44,.15); }
+  .peso-field span{ font-size:.8rem; color: var(--text-dim); font-weight:600; }
   .unidade-toggle{
     display:flex;
     background:#0c1422;
     border:1px solid var(--border);
-    border-radius:6px;
+    border-radius:8px;
     overflow:hidden;
   }
   .unidade-toggle button{
     background:none;
     border:none;
     color: var(--text-dim);
-    font-size:.75rem;
-    font-weight:600;
-    padding: 6px 10px;
+    font-size:.72rem;
+    font-weight:700;
+    padding: 7px 11px;
     cursor:pointer;
+    transition: background .15s, color .15s;
   }
   .unidade-toggle button.active{
     background: linear-gradient(135deg, var(--red-dark), var(--red));
     color:#fff;
   }
 
-  .empty-state{
-    color: var(--text-dim);
-    font-size:.9rem;
-    padding: 40px 0;
-    text-align:center;
+  @media (max-width: 560px){
+    .peso-bar{ flex-wrap:wrap; gap:16px; }
   }
 
-  .formulacao{
-    margin-bottom: 22px;
+  .empty-state{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 70px 20px;
+    color: var(--text-dim);
   }
+  .empty-state .empty-icon{
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(177,24,31,.18), rgba(232,184,75,.1));
+    border: 1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 2rem;
+    margin-bottom: 18px;
+  }
+  .empty-state .empty-title{
+    font-size: 1.05rem;
+    font-weight:700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .empty-state .empty-sub{
+    font-size:.85rem;
+    max-width: 340px;
+    line-height:1.5;
+  }
+
+  .formulacoes-grid{
+    display:flex;
+    flex-direction:column;
+    gap: 16px;
+  }
+  .formulacao{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  }
+  .formulacao .form-head{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .formulacao .form-icon{
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 1.05rem;
+    flex-shrink:0;
+  }
+  .formulacao .form-icon.tipo-gotas{ background: rgba(127,168,201,.15); }
+  .formulacao .form-icon.tipo-liquido{ background: rgba(74,180,150,.15); }
+  .formulacao .form-icon.tipo-comprimido{ background: rgba(180,130,220,.15); }
+  .formulacao .form-icon.tipo-injetavel{ background: rgba(232,35,44,.15); }
   .formulacao h3{
     font-size: .95rem;
-    margin: 0 0 10px;
+    margin: 0;
     font-weight:700;
+    line-height:1.3;
   }
   .valor-pill{
     display:inline-block;
-    background: var(--pill-bg);
+    background: linear-gradient(135deg, #4a3910, var(--pill-bg));
     color: var(--pill-text);
-    font-weight:700;
-    padding: 3px 10px;
-    border-radius: 5px;
-    font-size:.88rem;
-    margin-right: 6px;
+    font-weight:800;
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size:.95rem;
+    margin-right: 8px;
+    border: 1px solid rgba(244,207,110,.25);
   }
   .formulacao .linha-principal{
     font-size:.88rem;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     color: var(--text);
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap: 4px;
   }
   .sub-lista{
     list-style:none;
     margin:0;
-    padding:0;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--border);
   }
   .sub-lista li{
     font-size:.8rem;
     color: var(--text-dim);
-    padding: 3px 0 3px 16px;
+    padding: 4px 0 4px 16px;
     position:relative;
+    line-height:1.5;
   }
   .sub-lista li::before{
     content: "•";
@@ -296,20 +396,28 @@
   .sub-lista li.formula{
     font-family: 'Consolas', 'Courier New', monospace;
     font-size: .74rem;
-    line-height: 1.6;
+    line-height: 1.7;
+    margin-top: 4px;
   }
   .f-fixo{ color: #ffffff; }
   .f-var{ color: #7fa8c9; }
 
   .observacoes{
-    margin-top: 26px;
-    border-top: 1px dashed var(--border);
-    padding-top: 18px;
+    margin-top: 20px;
+    background: rgba(232,35,44,.05);
+    border: 1px solid rgba(232,35,44,.2);
+    border-radius: 14px;
+    padding: 18px 20px;
   }
   .observacoes h3{
     color: var(--red-bright);
-    font-size: 1rem;
-    margin: 0 0 12px;
+    font-size: .9rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin: 0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
   }
   .obs-item{
     display:flex;
@@ -317,13 +425,15 @@
     align-items:flex-start;
     font-size:.85rem;
     color: #cdd5e3;
-    margin-bottom: 10px;
-    line-height:1.4;
+    margin-bottom: 12px;
+    line-height:1.5;
   }
+  .obs-item:last-child{ margin-bottom:0; }
   .obs-item .icon{
     color: var(--red-bright);
     flex-shrink:0;
     margin-top:1px;
+    font-size:.8rem;
   }
 
   .fonte-tag{
@@ -368,15 +478,14 @@
 
 <div class="topbar-app">
   <div class="logo-wrap">
-    <a href="https://betofs1.github.io/dosespediatricas/index.html" title="Voltar para a página inicial do FarmaPrática">
+    <a href="../index.html" title="Voltar para a página inicial do FarmaPrática">
       <img src="logo.png" alt="FarmaPrática">
     </a>
   </div>
   <div class="titulo-central">
     <div class="titulo-principal">CALCULADORA PEDIÁTRICA</div>
-    <div class="titulo-descricao">Doses por peso ou idade: gotas, xarope e comprimidos com base em bulas e diretrizes clínicas</div>
+    <div class="titulo-descricao">Doses por peso ou idade — gotas, xarope e comprimidos com base em bulas e diretrizes clínicas</div>
   </div>
-  <div class="spacer"></div>
 </div>
 
 <div class="app-body">
@@ -393,7 +502,11 @@
   <div class="main">
     <div class="main-inner">
       <div id="conteudo">
-        <div class="empty-state">Selecione um fármaco na lista ao lado para ver as doses pediátricas.</div>
+        <div class="empty-state">
+          <div class="empty-icon">💊</div>
+          <div class="empty-title">Nenhum fármaco selecionado</div>
+          <div class="empty-sub">Escolha um item na lista ao lado para calcular a dose pediátrica por peso ou idade.</div>
+        </div>
       </div>
       <div class="disclaimer-fixed">
         ⚠️ Ferramenta de apoio exclusiva para profissionais de saúde. Sempre confirmar na bula oficial vigente (ANVISA). Não substitui avaliação clínica individualizada. Doses máximas absolutas devem ser respeitadas independentemente do peso. A contagem de gotas usa referências de conta-gotas do fabricante quando conhecidas, ou o padrão farmacotécnico de 20 gotas/mL — confirme sempre na embalagem.
@@ -452,7 +565,13 @@ function selecionarFarmaco(id){
 function renderConteudo(){
   const el = document.getElementById('conteudo');
   if(!farmacoAtual){
-    el.innerHTML = '<div class="empty-state">Selecione um fármaco na lista ao lado para ver as doses pediátricas.</div>';
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">💊</div>
+        <div class="empty-title">Nenhum fármaco selecionado</div>
+        <div class="empty-sub">Escolha um item na lista ao lado para calcular a dose pediátrica por peso ou idade.</div>
+      </div>
+    `;
     return;
   }
   const f = farmacoAtual;
@@ -469,21 +588,31 @@ function renderConteudo(){
 
     <div class="peso-bar">
       <div class="peso-field">
-        <label>Peso</label>
-        <input type="number" id="peso" min="0" step="0.1" placeholder="0" value="${pesoAtual || ''}">
-        <span>kg</span>
+        <div class="field-icon">⚖️</div>
+        <div class="field-inputs">
+          <label>Peso</label>
+          <div class="field-row">
+            <input type="number" id="peso" min="0" step="0.1" placeholder="0" value="${pesoAtual || ''}">
+            <span>kg</span>
+          </div>
+        </div>
       </div>
       <div class="peso-field">
-        <label>Idade</label>
-        <input type="number" id="idade" min="0" step="${idadeUnidade === 'meses' ? '1' : '0.1'}" placeholder="0" value="${idadeAtual || ''}">
-        <div class="unidade-toggle">
-          <button type="button" id="btn-meses" class="${idadeUnidade === 'meses' ? 'active' : ''}">Meses</button>
-          <button type="button" id="btn-anos" class="${idadeUnidade === 'anos' ? 'active' : ''}">Anos</button>
+        <div class="field-icon">🎂</div>
+        <div class="field-inputs">
+          <label>Idade</label>
+          <div class="field-row">
+            <input type="number" id="idade" min="0" step="${idadeUnidade === 'meses' ? '1' : '0.1'}" placeholder="0" value="${idadeAtual || ''}">
+            <div class="unidade-toggle">
+              <button type="button" id="btn-meses" class="${idadeUnidade === 'meses' ? 'active' : ''}">Meses</button>
+              <button type="button" id="btn-anos" class="${idadeUnidade === 'anos' ? 'active' : ''}">Anos</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div id="formulacoes"></div>
+    <div class="formulacoes-grid" id="formulacoes"></div>
     <div id="observacoes-container"></div>
     <div class="fonte-tag">📚 Fonte: <b>${f.fonte}</b></div>
   `;
@@ -682,8 +811,14 @@ function calcularEExibir(){
       subItens.push({tipo:'formula', texto: `<span class="f-fixo">Fórmula:</span> ${formulaCompleta}`});
     }
 
+    const iconesPorTipo = { gotas: '💧', liquido: '🧴', comprimido: '💊', injetavel: '💉' };
+    const icone = iconesPorTipo[form.tipo] || '💊';
+
     card.innerHTML = `
-      <h3>${form.rotulo}</h3>
+      <div class="form-head">
+        <div class="form-icon tipo-${form.tipo}">${icone}</div>
+        <h3>${form.rotulo}</h3>
+      </div>
       <div class="linha-principal"><span class="valor-pill">${valorTexto}</span>${form.viaTexto || ''}</div>
       <ul class="sub-lista">
         ${subItens.map(i => `<li class="${i.tipo}">${i.texto}</li>`).join('')}
@@ -717,7 +852,7 @@ function calcularEExibir(){
   if(obsItens.length){
     obsDiv.innerHTML = `
       <div class="observacoes">
-        <h3>Observações</h3>
+        <h3>⚠️ Observações</h3>
         ${obsItens.map(o => `<div class="obs-item"><span class="icon">⊘</span><span>${o}</span></div>`).join('')}
       </div>
     `;
